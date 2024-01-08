@@ -92,4 +92,3 @@ public class Fighter {
         return health <= 0;
     }
 }
-

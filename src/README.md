@@ -1,0 +1,3 @@
+## Furo's Pen and Paper Battle Simulator
+
+A little Battle Simulator for testing balancing, changes incoming...
