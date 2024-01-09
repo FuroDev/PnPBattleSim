@@ -4,14 +4,14 @@ public class Fighter {
     private String name;
     private int health;
     private int maxHealth;
-    private int damage;
+    private Weapon weapon;
     private int accuracy;
     private int initiative;
 
-    public Fighter(String name, int health, int maxHealth, int damage, int accuracy) {
+    public Fighter(String name, int health, int maxHealth, Weapon weapon, int accuracy) {
         this.name = name;
         this.health = health;
-        this.damage = damage;
+        this.weapon = weapon;
         this.accuracy = accuracy;
         this.maxHealth = maxHealth;
     }
@@ -28,8 +28,8 @@ public class Fighter {
         return maxHealth;
     }
 
-    public int getDamage() {
-        return damage;
+    public Weapon getWeapon() {
+        return weapon;
     }
 
     public int getAccuracy() {
@@ -48,8 +48,8 @@ public class Fighter {
         this.maxHealth = maxHealth;
     }
 
-    public void setDamage(int damage) {
-        this.damage = damage;
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
     }
 
     public void setAccuracy(int accuracy) {
@@ -75,17 +75,31 @@ public class Fighter {
         }
     }
 
-    public int damageToTarget() {
+    public int[] damageToTarget() {
         Random random = new Random();
         int accuracyCheck = random.nextInt(100) + 1;
+
         boolean accuracyCheckFail = accuracyCheck > getAccuracy();
         boolean accuracyCheckCrit = accuracyCheck <= getAccuracy() / 10;
-        if (accuracyCheckFail) {
-            return -1;
-        } else if (accuracyCheckCrit) {
-            return getDamage()*2;
+
+        int damage;
+        int isCriticalHit;
+
+        if (accuracyCheckCrit) {
+            isCriticalHit = 1;
+        } else {
+            isCriticalHit = 0;
         }
-        return getDamage();
+
+        if (accuracyCheckFail) {
+            damage = -1;
+            isCriticalHit = 0;
+        } else if (accuracyCheckCrit){
+            damage = weapon.getDamage() * 2;
+        } else {
+            damage = weapon.getDamage();
+        }
+        return new int[] {damage, isCriticalHit};
     }
 
     public boolean isDefeated() {

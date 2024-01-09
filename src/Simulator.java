@@ -15,13 +15,13 @@ public class Simulator {
             System.out.println("How many Player-Characters do you want to create?");
             int playerCharactersCount = Integer.parseInt(input.nextLine());
             for (int i = 1; i <= playerCharactersCount; i++) {
-                Fighter playerFighter = createPlayer(input, "Player-Character " + i);
+                Fighter playerFighter = createPlayer(input, "Player-Character" + i);
                 playerFighters.add(playerFighter);
             }
             System.out.println("How many Non-Player-Characters do you want to create?");
             int nonPlayerFightersCount = Integer.parseInt(input.nextLine());
             for (int i = 1; i <= nonPlayerFightersCount; i++) {
-                Fighter nonPlayerFighter = createEnemy(input, "Non-Player-Character " + i);
+                Fighter nonPlayerFighter = createEnemy(input, "Non-Player-Character" + i);
                 nonPlayerFighters.add(nonPlayerFighter);
             }
 
@@ -38,6 +38,9 @@ public class Simulator {
             int numberOfBattles = Integer.parseInt(input.nextLine());
             for (int i = 0; i < numberOfBattles; i++) {
                 System.out.println("Let the fight begin! Round 1!");
+                for (Fighter fighter : allFighters) {
+                    System.out.println(fighter.getName() + ": " + fighter.getInitiative());
+                }
                 int numberOfRounds = 0;
 
                 while (!anyGroupIsDefeated(playerFighters) && !anyGroupIsDefeated(nonPlayerFighters)) {
@@ -53,11 +56,26 @@ public class Simulator {
                     numberOfRounds++;
 
                     for (Fighter attacker : allFighters) {
-                        if (playerFighters.contains(attacker) && !attacker.isDefeated()) {
+
+                        boolean IsPlayer = playerFighters.contains(attacker);
+                        boolean IsDefeated = attacker.isDefeated();
+                        boolean hasAmmunition = attacker.getWeapon().getAmmunition() != 0;
+
+                        if (!IsDefeated && !hasAmmunition) {
+                            attacker.getWeapon().reloadWeapon();
+                            System.out.println(attacker.getName() + " has to reload the weapon!");
+                        }
+                        if (IsPlayer && !IsDefeated && hasAmmunition && !anyGroupIsDefeated(nonPlayerFighters)) {
                             Fighter target = nonPlayerFighters.get(random.nextInt(nonPlayerFighters.size()));
+                            while (target.isDefeated()) {
+                                target = nonPlayerFighters.get(random.nextInt(nonPlayerFighters.size()));
+                            }
                             performAttack(attacker, target);
-                        } else {
+                        } else if (!IsDefeated && !anyGroupIsDefeated(playerFighters)) {
                             Fighter target = playerFighters.get(random.nextInt(playerFighters.size()));
+                            while (target.isDefeated()) {
+                                target = playerFighters.get(random.nextInt(playerFighters.size()));
+                            }
                             performAttack(attacker, target);
                         }
                     }
@@ -77,7 +95,7 @@ public class Simulator {
 //              Win or Loss?
                 if (groupIsDefeated(nonPlayerFighters)) {
                     System.out.println("You have won! \n ////////////////// \n //////////////////");
-                    System.out.println(numberOfRounds );
+                    System.out.println(numberOfRounds);
 
                 } else if (groupIsDefeated(playerFighters)) {
                     System.out.println("You were defeated! \n ////////////////// \n //////////////////");
@@ -92,32 +110,49 @@ public class Simulator {
 
     private static Fighter createPlayer(Scanner input, String prompt) {
         System.out.println("Creating " + prompt);
-
         System.out.println("Enter " + prompt + "'s name: ");
         String name = input.nextLine();
         int health = 100;
         int maxHealth = health;
-        System.out.println("Enter " + name + "'s damage: ");
-        int damage = Integer.parseInt(input.nextLine());
+
+        Weapon weapon = createWeapon(name, input);
+        weapon.reloadWeapon();
+
         System.out.println("Enter " + name + "'s accuracy: ");
         int accuracy = Integer.parseInt(input.nextLine());
 
-        return new Fighter(name, health, maxHealth, damage, accuracy);
+        return new Fighter(name, health, maxHealth, weapon, accuracy);
     }
 
     private static Fighter createEnemy(Scanner input, String prompt) {
         System.out.println("Creating " + prompt);
-
         String name = prompt;
         System.out.println("Enter " + prompt + "'s health: ");
         int health = Integer.parseInt(input.nextLine());
         final int maxHealth = health;
-        System.out.println("Enter " + prompt + "'s damage: ");
-        int damage = Integer.parseInt(input.nextLine());
+
+        Weapon weapon = createWeapon(name, input);
+        weapon.reloadWeapon();
+
         System.out.println("Enter " + prompt + "'s accuracy: ");
         int accuracy = Integer.parseInt(input.nextLine());
 
-        return new Fighter(name, health, maxHealth, damage, accuracy);
+        return new Fighter(name, health, maxHealth, weapon, accuracy);
+    }
+
+    private static Weapon createWeapon(String name, Scanner input) {
+        System.out.println("What kind of weapon should " + name + " use?");
+        System.out.println("Enter one of the following numbers: " +
+                "\n 0 -> Melee \n 1 -> Gun \n 2 -> Shotgun \n 3 -> Rifle \n 4 -> Sniper Rifle");
+        int weaponType = Integer.parseInt(input.nextLine());
+        if (weaponType != 0) {
+            System.out.println("What kind of ammunition type should the weapon have?");
+            System.out.println("Enter one of the following numbers: " +
+                    "\n 0 -> Projectile \n 1 -> Energy");
+            int ammunitionType = Integer.parseInt(input.nextLine());
+            return new Weapon(weaponType, ammunitionType);
+        }
+        return new Weapon(weaponType);
     }
 
     private static void assignInitiative(ArrayList<Fighter> allFighters) {
@@ -152,10 +187,14 @@ public class Simulator {
 
     private static void performAttack(Fighter attacker, Fighter target) {
         System.out.println(attacker.getName() + " attacks " + target.getName() + ".");
-        int damage = attacker.damageToTarget();
+        int[] attackResult = attacker.damageToTarget();
+        int damage = attackResult[0];
+        boolean isCriticalHit = attackResult[1] == 1;
 
         if (damage == -1) {
             System.out.println(attacker.getName() + " misses " + target.getName() + ".");
+        } else if (isCriticalHit) {
+            System.out.println(target.getName() + " gets critically hit and loses " + damage + "HP!");
         } else {
             System.out.println(target.getName() + " loses " + damage + "HP.");
         }
