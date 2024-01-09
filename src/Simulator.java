@@ -142,13 +142,20 @@ public class Simulator {
 
     private static Weapon createWeapon(String name, Scanner input) {
         System.out.println("What kind of weapon should " + name + " use?");
-        System.out.println("Enter one of the following numbers: " +
-                "\n 0 -> Melee \n 1 -> Gun \n 2 -> Shotgun \n 3 -> Rifle \n 4 -> Sniper Rifle");
+        System.out.println("""
+                Enter one of the following numbers:\s
+                 0 -> Melee\s
+                 1 -> Gun\s
+                 2 -> Shotgun\s
+                 3 -> Rifle\s
+                 4 -> Sniper Rifle""");
         int weaponType = Integer.parseInt(input.nextLine());
         if (weaponType != 0) {
             System.out.println("What kind of ammunition type should the weapon have?");
-            System.out.println("Enter one of the following numbers: " +
-                    "\n 0 -> Projectile \n 1 -> Energy");
+            System.out.println("""
+                    Enter one of the following numbers:\s
+                     0 -> Projectile \s
+                     1 -> Energy""");
             int ammunitionType = Integer.parseInt(input.nextLine());
             return new Weapon(weaponType, ammunitionType);
         }
