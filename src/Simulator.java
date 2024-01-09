@@ -151,8 +151,9 @@ public class Simulator {
                  4 -> Sniper Rifle""");
         int weaponType = Integer.parseInt(input.nextLine());
         if (weaponType != 0) {
-            System.out.println("What kind of ammunition type should the weapon have?");
+            System.out.println();
             System.out.println("""
+                    What kind of ammunition type should the weapon have?\s
                     Enter one of the following numbers:\s
                      0 -> Projectile \s
                      1 -> Energy""");
