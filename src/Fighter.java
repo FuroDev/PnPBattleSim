@@ -2,15 +2,15 @@ import java.util.*;
 
 public class Fighter {
     private String name;
-    private int health;
+    private int currentHealth;
     private int maxHealth;
     private Weapon weapon;
     private int accuracy;
     private int initiative;
 
-    public Fighter(String name, int health, int maxHealth, Weapon weapon, int accuracy) {
+    public Fighter(String name, int currentHealth, int maxHealth, Weapon weapon, int accuracy) {
         this.name = name;
-        this.health = health;
+        this.currentHealth = currentHealth;
         this.weapon = weapon;
         this.accuracy = accuracy;
         this.maxHealth = maxHealth;
@@ -20,8 +20,8 @@ public class Fighter {
         return name;
     }
 
-    public int getHealth() {
-        return health;
+    public int getCurrentHealth() {
+        return currentHealth;
     }
 
     public int getMaxHealth() {
@@ -40,8 +40,8 @@ public class Fighter {
         this.name = name;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
     }
 
     public void setMaxHealth(int maxHealth) {
@@ -68,33 +68,30 @@ public class Fighter {
         if (damage == -1) {
             damage = 0;
         }
-        setHealth(getHealth() - damage);
-        if (getHealth() <= 0) {
-            setHealth(0);
+        setCurrentHealth(getCurrentHealth() - damage);
+        if (getCurrentHealth() <= 0) {
+            setCurrentHealth(0);
             System.out.println(getName() + " has been defeated.");
         }
     }
 
     public int[] damageToTarget() {
         Random random = new Random();
-        int accuracyCheck = random.nextInt(100) + 1;
+        int accuracyCheck = random.nextInt(99) + 1;
 
         boolean accuracyCheckFail = accuracyCheck > getAccuracy();
-        boolean accuracyCheckCrit = accuracyCheck <= getAccuracy() / 10;
+        boolean accuracyCheckCritical = accuracyCheck <= getAccuracy() / 10;
 
         int damage;
-        int isCriticalHit;
+        int isCriticalHit = 0;
 
-        if (accuracyCheckCrit) {
+        if (accuracyCheckCritical) {
             isCriticalHit = 1;
-        } else {
-            isCriticalHit = 0;
         }
 
         if (accuracyCheckFail) {
             damage = -1;
-            isCriticalHit = 0;
-        } else if (accuracyCheckCrit){
+        } else if (accuracyCheckCritical){
             damage = weapon.getDamage() * 2;
         } else {
             damage = weapon.getDamage();
@@ -103,6 +100,6 @@ public class Fighter {
     }
 
     public boolean isDefeated() {
-        return health <= 0;
+        return currentHealth <= 0;
     }
 }

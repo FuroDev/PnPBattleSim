@@ -2,6 +2,8 @@ import java.util.*;
 
 public class Simulator {
     private static Random random = new Random();
+    private static final int INITIATIVE_RANGE = 12;
+    private static final int PLAYER_HEALTH = 100;
 
     public static void main(String[] args) {
         try (Scanner input = new Scanner(System.in)) {
@@ -36,42 +38,49 @@ public class Simulator {
 //          Battle Simulator
             System.out.println("All characters created. How many battles do you want to simulate?");
             int numberOfBattles = Integer.parseInt(input.nextLine());
-            for (int i = 0; i < numberOfBattles; i++) {
+            int[] turnsInBattle = new int[numberOfBattles];
+            int[] playerDeathsInBattle = new int[numberOfBattles];
+            boolean[] playerVictories = new boolean[numberOfBattles];
+
+            for (int battleIndex = 0; battleIndex < numberOfBattles; battleIndex++) {
                 System.out.println("Let the fight begin! Round 1!");
                 for (Fighter fighter : allFighters) {
-                    System.out.println(fighter.getName() + ": " + fighter.getInitiative());
+                    System.out.println(fighter.getName() + "'s initiative: " + fighter.getInitiative());
                 }
-                int numberOfRounds = 0;
+                int numberOfTurns = 0;
 
                 while (!anyGroupIsDefeated(playerFighters) && !anyGroupIsDefeated(nonPlayerFighters)) {
+                    System.out.println("Prepare for round " + (numberOfTurns + 1) + ".");
 
                     for (Fighter players : playerFighters) {
-                        System.out.println(players.getName() + ": " + players.getHealth() + "HP");
+                        System.out.println(players.getName() + ": " + players.getCurrentHealth() + "HP");
                     }
                     for (Fighter nonPlayers : nonPlayerFighters) {
-                        System.out.println(nonPlayers.getName() + ": " + nonPlayers.getHealth() + "HP");
+                        System.out.println(nonPlayers.getName() + ": " + nonPlayers.getCurrentHealth() + "HP");
                     }
                     System.out.println("=======================================");
 
-                    numberOfRounds++;
+                    numberOfTurns++;
 
                     for (Fighter attacker : allFighters) {
 
                         boolean IsPlayer = playerFighters.contains(attacker);
                         boolean IsDefeated = attacker.isDefeated();
                         boolean hasAmmunition = attacker.getWeapon().getAmmunition() != 0;
+                        boolean endOfTurn = false;
 
                         if (!IsDefeated && !hasAmmunition) {
                             attacker.getWeapon().reloadWeapon();
-                            System.out.println(attacker.getName() + " has to reload the weapon!");
+                            System.out.println(attacker.getName() + " is out of ammunition and reloads!");
+                            endOfTurn = true;
                         }
-                        if (IsPlayer && !IsDefeated && hasAmmunition && !anyGroupIsDefeated(nonPlayerFighters)) {
+                        if (IsPlayer && !IsDefeated && hasAmmunition && !endOfTurn && !anyGroupIsDefeated(nonPlayerFighters)) {
                             Fighter target = nonPlayerFighters.get(random.nextInt(nonPlayerFighters.size()));
                             while (target.isDefeated()) {
                                 target = nonPlayerFighters.get(random.nextInt(nonPlayerFighters.size()));
                             }
                             performAttack(attacker, target);
-                        } else if (!IsDefeated && !anyGroupIsDefeated(playerFighters)) {
+                        } else if (!IsDefeated && !endOfTurn && !anyGroupIsDefeated(playerFighters)) {
                             Fighter target = playerFighters.get(random.nextInt(playerFighters.size()));
                             while (target.isDefeated()) {
                                 target = playerFighters.get(random.nextInt(playerFighters.size()));
@@ -79,32 +88,46 @@ public class Simulator {
                             performAttack(attacker, target);
                         }
                     }
-                    System.out.println("End of round " + numberOfRounds + ".");
-                    if (anyGroupIsDefeated(playerFighters) || anyGroupIsDefeated(nonPlayerFighters)) {
-                        System.out.println("Prepare for round " + (numberOfRounds + 1) + ".");
-                    }
+                    System.out.println("End of round " + numberOfTurns + ".");
                 }
 
                 for (Fighter players : playerFighters) {
-                    System.out.println(players.getName() + ": " + players.getHealth() + " HP");
+                    System.out.println(players.getName() + ": " + players.getCurrentHealth() + " HP");
                 }
                 for (Fighter nonPlayers : nonPlayerFighters) {
-                    System.out.println(nonPlayers.getName() + ": " + nonPlayers.getHealth() + " HP");
+                    System.out.println(nonPlayers.getName() + ": " + nonPlayers.getCurrentHealth() + " HP");
                 }
 
-//              Win or Loss?
+//              victory or defeat?
                 if (groupIsDefeated(nonPlayerFighters)) {
-                    System.out.println("You have won! \n ////////////////// \n //////////////////");
-                    System.out.println(numberOfRounds);
+                    System.out.println("You have won! The battle lasted " + numberOfTurns + " rounds. " +
+                            "\n ////////////////// \n //////////////////");
+                    playerVictories[battleIndex] = true;
 
                 } else if (groupIsDefeated(playerFighters)) {
-                    System.out.println("You were defeated! \n ////////////////// \n //////////////////");
+                    System.out.println("You were defeated! The battle lasted " + numberOfTurns + " rounds. " +
+                            "\n ////////////////// \n //////////////////");
+                    playerVictories[battleIndex] = false;
                 }
+                turnsInBattle[battleIndex] = numberOfTurns;
+                for (Fighter player : playerFighters) {
+                    if (player.isDefeated()) {
+                        playerDeathsInBattle[battleIndex]++;
+                    }
+                }
+
                 for (Fighter fighter : allFighters) {
-                    fighter.setHealth(fighter.getMaxHealth());
+                    fighter.setCurrentHealth(fighter.getMaxHealth());
+                    fighter.getWeapon().reloadWeapon();
                 }
             }
 
+//          statistics
+            for (int j = 0; j < turnsInBattle.length; j++) {
+                System.out.println("Battle " + (j+1) + " // " + turnsInBattle[j] + " rounds // " +
+                        "Player deaths: " + playerDeathsInBattle[j] +
+                        (playerVictories[j] ? " // -> Victory" : " // -> Defeat"));
+            }
         }
     }
 
@@ -112,8 +135,8 @@ public class Simulator {
         System.out.println("Creating " + prompt);
         System.out.println("Enter " + prompt + "'s name: ");
         String name = input.nextLine();
-        int health = 100;
-        int maxHealth = health;
+        int maxHealth = PLAYER_HEALTH;
+        int currentHealth = maxHealth;
 
         Weapon weapon = createWeapon(name, input);
         weapon.reloadWeapon();
@@ -121,7 +144,7 @@ public class Simulator {
         System.out.println("Enter " + name + "'s accuracy: ");
         int accuracy = Integer.parseInt(input.nextLine());
 
-        return new Fighter(name, health, maxHealth, weapon, accuracy);
+        return new Fighter(name, currentHealth, maxHealth, weapon, accuracy);
     }
 
     private static Fighter createEnemy(Scanner input, String prompt) {
@@ -168,7 +191,7 @@ public class Simulator {
         for (Fighter fighter : allFighters) {
             int initiative;
             do {
-                initiative = random.nextInt(12) + 1;
+                initiative = random.nextInt(INITIATIVE_RANGE) + 1;
             } while (!usedInitiativeValues.add(initiative));
             fighter.setInitiative(initiative);
         }
@@ -207,5 +230,6 @@ public class Simulator {
             System.out.println(target.getName() + " loses " + damage + "HP.");
         }
         target.takeDamage(damage);
+        attacker.getWeapon().setAmmunition(attacker.getWeapon().getAmmunition() - 1);
     }
 }

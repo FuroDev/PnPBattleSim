@@ -53,50 +53,44 @@ public class Weapon {
         final boolean isEnergyWeapon = getAmmunitionType() == ENERGY_WEAPON;
 
         if (carriesMeleeWeapon) {
-            return random.nextInt(44) + 8;
+            return random.nextInt(37) + 8;
         }
 
         if (carriesGun && isProjectileWeapon) {
-            return random.nextInt(40) + 4;
+            return random.nextInt(37) + 4;
         } else if (carriesGun && isEnergyWeapon) {
-            return random.nextInt(29) + 11;
+            return random.nextInt(19) + 11;
         }
 
         if (carriesShotgun && isProjectileWeapon) {
-            return random.nextInt(43) + 7;
+            return random.nextInt(37) + 7;
         } else if (carriesShotgun && isEnergyWeapon) {
-            return random.nextInt(41) + 5;
+            return random.nextInt(37) + 5;
         }
 
         if (carriesRifle && isProjectileWeapon) {
-            return random.nextInt(36) + 9;
+            return random.nextInt(28) + 9;
         } else if (carriesRifle && isEnergyWeapon) {
-            return random.nextInt(34) + 7;
+            return random.nextInt(28) + 7;
         }
 
         if (carriesSniperRifle && isProjectileWeapon) {
-            return random.nextInt(52) + 7;
+            return random.nextInt(46) + 7;
         } else if (carriesSniperRifle && isEnergyWeapon) {
-            return random.nextInt(45) + 9;
+            return random.nextInt(37) + 9;
         }
         return 0;
     }
 
     public int getMagazineCapacity() {
-        switch (getWeaponType()) {
-            case MELEE_WEAPON_TYPE:
-                return 9999;
-            case GUN_WEAPON_TYPE:
-                return 6;
-            case SHOTGUN_WEAPON_TYPE:
-                return 3;
-            case RIFLE_WEAPON_TYPE:
-                return 9;
-            case SNIPER_RIFLE_WEAPON_TYPE:
-                return 2;
-            default:
-                return 0;
-        }
+        return switch (getWeaponType()) {
+            case MELEE_WEAPON_TYPE -> 9999;
+            case GUN_WEAPON_TYPE -> 6;
+            case SHOTGUN_WEAPON_TYPE -> 3;
+            case RIFLE_WEAPON_TYPE -> 9;
+            case SNIPER_RIFLE_WEAPON_TYPE -> 2;
+            default -> 0;
+        };
     }
 
     public int getAmmunition() {
@@ -109,6 +103,5 @@ public class Weapon {
 
     public void reloadWeapon() {
         setAmmunition(getMagazineCapacity());
-
     }
 }
