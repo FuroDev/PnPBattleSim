@@ -41,6 +41,7 @@ public class Simulator {
             int[] turnsInBattle = new int[numberOfBattles];
             int[] playerDeathsInBattle = new int[numberOfBattles];
             boolean[] playerVictories = new boolean[numberOfBattles];
+            int playerVictoriesCount = 0;
 
             for (int battleIndex = 0; battleIndex < numberOfBattles; battleIndex++) {
                 System.out.println("Let the fight begin! Round 1!");
@@ -103,6 +104,7 @@ public class Simulator {
                     System.out.println("You have won! The battle lasted " + numberOfTurns + " rounds. " +
                             "\n ////////////////// \n //////////////////");
                     playerVictories[battleIndex] = true;
+                    playerVictoriesCount++;
 
                 } else if (groupIsDefeated(playerFighters)) {
                     System.out.println("You were defeated! The battle lasted " + numberOfTurns + " rounds. " +
@@ -128,6 +130,7 @@ public class Simulator {
                         "Player deaths: " + playerDeathsInBattle[j] +
                         (playerVictories[j] ? " // -> Victory" : " // -> Defeat"));
             }
+            System.out.println("Win rate: " + (numberOfBattles/100*playerVictoriesCount) + "%");
         }
     }
 
