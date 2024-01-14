@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Fighter {
-    private String name;
+    private final String name;
     private int currentHealth;
     private int maxHealth;
     private Weapon weapon;
@@ -34,10 +34,6 @@ public class Fighter {
 
     public int getAccuracy() {
         return accuracy;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setCurrentHealth(int currentHealth) {
