@@ -7,6 +7,7 @@ public class Fighter {
     private Weapon weapon;
     private int accuracy;
     private int initiative;
+    private int currentTurn;
 
     public Fighter(String name, int currentHealth, int maxHealth, Weapon weapon, int accuracy) {
         this.name = name;

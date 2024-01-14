@@ -104,4 +104,27 @@ public class Weapon {
     public void reloadWeapon() {
         setAmmunition(getMagazineCapacity());
     }
+
+    public static Weapon createWeapon(String name, Scanner input) {
+        System.out.println("What kind of weapon should " + name + " use?");
+        System.out.println("""
+                Enter one of the following numbers:\s
+                 0 -> Melee\s
+                 1 -> Gun\s
+                 2 -> Shotgun\s
+                 3 -> Rifle\s
+                 4 -> Sniper Rifle""");
+        int weaponType = Integer.parseInt(input.nextLine());
+        if (weaponType != 0) {
+            System.out.println();
+            System.out.println("""
+                    What kind of ammunition type should the weapon have?\s
+                    Enter one of the following numbers:\s
+                     0 -> Projectile \s
+                     1 -> Energy""");
+            int ammunitionType = Integer.parseInt(input.nextLine());
+            return new Weapon(weaponType, ammunitionType);
+        }
+        return new Weapon(weaponType);
+    }
 }
