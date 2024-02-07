@@ -2,10 +2,7 @@ import java.util.*;
 
 public class CharacterCreation {
 
-    public CharacterCreation() {
-    }
-
-    public int[] defineNumberOfCharacters(Scanner input) {
+    public static int[] defineNumberOfCharacters(Scanner input) {
         System.out.println("First, let us create Fighters.");
         int[] numberOfCharacters = new int[2];
         System.out.println("How many Player-Characters do you want to create?");
@@ -15,7 +12,7 @@ public class CharacterCreation {
         return numberOfCharacters;
     }
 
-    public Fighter createPlayer(Scanner input, String prompt) {
+    public static Fighter createPlayer(Scanner input, String prompt) {
         System.out.println("Creating " + prompt);
         System.out.println("Enter " + prompt + "'s name: ");
         String name = input.nextLine();
@@ -31,7 +28,7 @@ public class CharacterCreation {
         return new Fighter(name, currentHealth, maxHealth, weapon, accuracy);
     }
 
-    public Fighter createEnemy(Scanner input, String prompt) {
+    public static Fighter createEnemy(Scanner input, String prompt) {
         System.out.println("Creating " + prompt);
         String name = prompt;
         System.out.println("Enter " + prompt + "'s health: ");

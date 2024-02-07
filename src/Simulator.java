@@ -8,26 +8,27 @@ public class Simulator {
         Scanner input = new Scanner(System.in);
         ArrayList<Fighter> playerFighters = new ArrayList<>();
         ArrayList<Fighter> nonPlayerFighters = new ArrayList<>();
+        ArrayList<Fighter> allFighters = new ArrayList<>();
 
         System.out.println("Welcome to the Battle Simulator.");
 
 //      Character Creation
-        CharacterCreation characterCreation = new CharacterCreation();
-        int[] numberOfCharacters = characterCreation.defineNumberOfCharacters(input);
+        int[] numberOfCharacters = CharacterCreation.defineNumberOfCharacters(input);
         for (int i = 1; i <= numberOfCharacters[0]; i++) {
-            Fighter playerFighter = characterCreation.createPlayer(input,"Player-Character" + i);
+            Fighter playerFighter = CharacterCreation.createPlayer(input,"Player-Character" + i);
             playerFighters.add(playerFighter);
         }
+        allFighters.addAll(playerFighters);
+
         for (int i = 1; i <= numberOfCharacters[1]; i++) {
-            Fighter nonPlayerFighter = characterCreation.createEnemy(input,"Non-Player-Character" + i);
+            Fighter nonPlayerFighter = CharacterCreation.createEnemy(input,"Non-Player-Character" + i);
             nonPlayerFighters.add(nonPlayerFighter);
         }
+        allFighters.addAll(nonPlayerFighters);
 
 //      Assign initiative for all
-        ArrayList<Fighter> allFighters = new ArrayList<>();
-        allFighters.addAll(playerFighters);
-        allFighters.addAll(nonPlayerFighters);
         assignInitiative(allFighters);
+
 //      sort allFighters by initiative numerically
         allFighters.sort((f1, f2) -> Integer.compare(f2.getInitiative(), f1.getInitiative()));
 
