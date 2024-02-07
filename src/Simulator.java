@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Simulator {
     private static Random random = new Random();
-    private static final int INITIATIVE_RANGE = 12;
+
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -26,21 +26,18 @@ public class Simulator {
         }
         allFighters.addAll(nonPlayerFighters);
 
-//      Assign initiative for all
-        assignInitiative(allFighters);
-
-//      sort allFighters by initiative numerically
-        allFighters.sort((f1, f2) -> Integer.compare(f2.getInitiative(), f1.getInitiative()));
+        Battle.assignInitiative(allFighters);
+        Battle.sortByInitiative(allFighters);
 
 //      Battle Simulator
         System.out.println("All characters created. How many battles do you want to simulate?");
-        int numberOfBattles = Integer.parseInt(input.nextLine());
-        int[] turnsInBattle = new int[numberOfBattles];
-        int[] playerDeathsInBattle = new int[numberOfBattles];
-        boolean[] playerVictories = new boolean[numberOfBattles];
+        int numberOfBattlesToSimulate = Integer.parseInt(input.nextLine());
+        int[] turnsUntilBattleEnded = new int[numberOfBattlesToSimulate];
+        int[] playerDeathsInBattle = new int[numberOfBattlesToSimulate];
+        boolean[] playerVictories = new boolean[numberOfBattlesToSimulate];
         int playerVictoriesCount = 0;
 
-        for (int i = 0; i < numberOfBattles; i++) {
+        for (int i = 0; i < numberOfBattlesToSimulate; i++) {
             System.out.println("Let the fight begin! Round 1!");
             for (Fighter fighter : allFighters) {
                 System.out.println(fighter.getName() + "'s initiative: " + fighter.getInitiative());
@@ -108,7 +105,7 @@ public class Simulator {
                         "\n ////////////////// \n //////////////////");
                 playerVictories[i] = false;
             }
-            turnsInBattle[i] = numberOfTurns;
+            turnsUntilBattleEnded[i] = numberOfTurns;
             for (Fighter player : playerFighters) {
                 if (player.isDefeated()) {
                     playerDeathsInBattle[i]++;
@@ -122,24 +119,13 @@ public class Simulator {
         }
 
 //      statistics
-        for (int j = 0; j < turnsInBattle.length; j++) {
-            System.out.println("Battle " + (j+1) + " // " + turnsInBattle[j] + " rounds // " +
+        for (int j = 0; j < turnsUntilBattleEnded.length; j++) {
+            System.out.println("Battle " + (j+1) + " // " + turnsUntilBattleEnded[j] + " rounds // " +
                     "Player deaths: " + playerDeathsInBattle[j] +
                     (playerVictories[j] ? " // -> Victory" : " // -> Defeat"));
         }
-        System.out.println("Win rate: " + (100/numberOfBattles * playerVictoriesCount) + "%");
+        System.out.println("Win rate: " + (100/numberOfBattlesToSimulate * playerVictoriesCount) + "%");
         input.close();
-    }
-
-    private static void assignInitiative(ArrayList<Fighter> allFighters) {
-        Set<Integer> usedInitiativeValues = new HashSet<>();
-        for (Fighter fighter : allFighters) {
-            int initiative;
-            do {
-                initiative = random.nextInt(INITIATIVE_RANGE) + 1;
-            } while (!usedInitiativeValues.add(initiative));
-            fighter.setInitiative(initiative);
-        }
     }
 
     private static boolean anyGroupIsDefeated(ArrayList<Fighter> fighters) {
