@@ -6,26 +6,18 @@ public class Simulator {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        ArrayList<Fighter> playerFighters = new ArrayList<>();
-        ArrayList<Fighter> nonPlayerFighters = new ArrayList<>();
-        ArrayList<Fighter> allFighters = new ArrayList<>();
 
         System.out.println("Welcome to the Battle Simulator.");
 
 //      Character Creation
         int[] numberOfCharacters = CharacterCreation.defineNumberOfCharacters(input);
-        for (int i = 1; i <= numberOfCharacters[0]; i++) {
-            Fighter playerFighter = CharacterCreation.createPlayer(input,"Player-Character" + i);
-            playerFighters.add(playerFighter);
-        }
+        ArrayList<Fighter> playerFighters = CharacterCreation.createPlayerTeam(numberOfCharacters[0], input);
+        ArrayList<Fighter> nonPlayerFighters = CharacterCreation.createEnemyTeam(numberOfCharacters[1], input);
+        ArrayList<Fighter> allFighters = new ArrayList<>(numberOfCharacters[0] + numberOfCharacters[1]);
         allFighters.addAll(playerFighters);
-
-        for (int i = 1; i <= numberOfCharacters[1]; i++) {
-            Fighter nonPlayerFighter = CharacterCreation.createEnemy(input,"Non-Player-Character" + i);
-            nonPlayerFighters.add(nonPlayerFighter);
-        }
         allFighters.addAll(nonPlayerFighters);
 
+        // Start Battle
         Battle.assignInitiative(allFighters);
         Battle.sortByInitiative(allFighters);
 
