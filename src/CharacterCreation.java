@@ -12,7 +12,7 @@ public class CharacterCreation {
         return numberOfCharacters;
     }
 
-    public static ArrayList<Fighter> createPlayerTeam(int numberOfCharacters, Scanner input) {
+    public static ArrayList<Fighter> establishPlayerTeam(int numberOfCharacters, Scanner input) {
         ArrayList<Fighter> playerFighters = new ArrayList<>(numberOfCharacters);
         for (int i = 1; i <= numberOfCharacters; i++) {
             Fighter playerFighter = CharacterCreation.createPlayer(input,"Player-Character" + i);
@@ -21,7 +21,7 @@ public class CharacterCreation {
         return playerFighters;
     }
 
-    public static ArrayList<Fighter> createEnemyTeam(int numberOfCharacters, Scanner input) {
+    public static ArrayList<Fighter> establishEnemyTeam(int numberOfCharacters, Scanner input) {
         ArrayList<Fighter> nonPlayerFighters = new ArrayList<>(numberOfCharacters);
         for (int i = 1; i <= numberOfCharacters; i++) {
             Fighter nonPlayerFighter = CharacterCreation.createEnemy(input,"Non-Player-Character" + i);
