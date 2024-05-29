@@ -61,6 +61,14 @@ public class Fighter {
         this.initiative = initiative;
     }
 
+    public int getCurrentTurn() {
+        return currentTurn;
+    }
+
+    public void setCurrentTurn(int currentTurn) {
+        this.currentTurn = currentTurn;
+    }
+
     public void takeDamage(int damage) {
         if (damage == -1) {
             damage = 0;
@@ -89,7 +97,7 @@ public class Fighter {
         if (accuracyCheckFail) {
             damage = -1;
         } else if (accuracyCheckCritical){
-            damage = weapon.getDamage() * 2;
+            damage = weapon.getDamage() *2;
         } else {
             damage = weapon.getDamage();
         }

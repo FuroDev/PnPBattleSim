@@ -15,7 +15,7 @@ public class CharacterCreation {
     public static ArrayList<Fighter> establishPlayerTeam(int numberOfCharacters, Scanner input) {
         ArrayList<Fighter> playerFighters = new ArrayList<>(numberOfCharacters);
         for (int i = 1; i <= numberOfCharacters; i++) {
-            Fighter playerFighter = CharacterCreation.createPlayer(input,"Player-Character" + i);
+            Fighter playerFighter = createPlayer(input,"Player-Character " + i);
             playerFighters.add(playerFighter);
         }
         return playerFighters;
@@ -24,7 +24,7 @@ public class CharacterCreation {
     public static ArrayList<Fighter> establishEnemyTeam(int numberOfCharacters, Scanner input) {
         ArrayList<Fighter> nonPlayerFighters = new ArrayList<>(numberOfCharacters);
         for (int i = 1; i <= numberOfCharacters; i++) {
-            Fighter nonPlayerFighter = CharacterCreation.createEnemy(input,"Non-Player-Character" + i);
+            Fighter nonPlayerFighter = CharacterCreation.createEnemy(input,"Non-Player-Character " + i);
             nonPlayerFighters.add(nonPlayerFighter);
         }
         return nonPlayerFighters;
@@ -56,7 +56,7 @@ public class CharacterCreation {
         Weapon weapon = Weapon.createWeapon(name, input);
         weapon.reloadWeapon();
 
-        System.out.println("Enter " + prompt + "'s accuracy: ");
+        System.out.println("Enter " + name + "'s accuracy: ");
         int accuracy = Integer.parseInt(input.nextLine());
 
         return new Fighter(name, health, maxHealth, weapon, accuracy);

@@ -1,8 +1,7 @@
 import java.util.*;
 
 public class Simulator {
-    private static Random random = new Random();
-
+    private static final Random random = new Random();
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -36,7 +35,7 @@ public class Simulator {
             }
             int numberOfTurns = 0;
 
-            while (!anyGroupIsDefeated(playerFighters) && !anyGroupIsDefeated(nonPlayerFighters)) {
+            while (!groupIsDefeated(playerFighters) && !groupIsDefeated(nonPlayerFighters)) {
                 System.out.println("Prepare for round " + (numberOfTurns + 1) + ".");
 
                 for (Fighter players : playerFighters) {
@@ -61,13 +60,13 @@ public class Simulator {
                         System.out.println(attacker.getName() + " is out of ammunition and reloads!");
                         endOfTurn = true;
                     }
-                    if (IsPlayer && !IsDefeated && hasAmmunition && !endOfTurn && !anyGroupIsDefeated(nonPlayerFighters)) {
+                    if (IsPlayer && !IsDefeated && hasAmmunition && !endOfTurn && !groupIsDefeated(nonPlayerFighters)) {
                         Fighter target = nonPlayerFighters.get(random.nextInt(nonPlayerFighters.size()));
                         while (target.isDefeated()) {
                             target = nonPlayerFighters.get(random.nextInt(nonPlayerFighters.size()));
                         }
                         performAttack(attacker, target);
-                    } else if (!IsDefeated && !endOfTurn && !anyGroupIsDefeated(playerFighters)) {
+                    } else if (!IsDefeated && !endOfTurn && !groupIsDefeated(playerFighters)) {
                         Fighter target = playerFighters.get(random.nextInt(playerFighters.size()));
                         while (target.isDefeated()) {
                             target = playerFighters.get(random.nextInt(playerFighters.size()));
@@ -118,15 +117,6 @@ public class Simulator {
         }
         System.out.println("Win rate: " + (100/numberOfBattlesToSimulate * playerVictoriesCount) + "%");
         input.close();
-    }
-
-    private static boolean anyGroupIsDefeated(ArrayList<Fighter> fighters) {
-        for (Fighter fighter : fighters) {
-            if (!fighter.isDefeated()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static boolean groupIsDefeated(ArrayList<Fighter> fighters) {

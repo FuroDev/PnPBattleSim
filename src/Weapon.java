@@ -3,54 +3,45 @@ import java.util.*;
 public class Weapon {
     private static final Random random = new Random();
 
-    private static final int MELEE_WEAPON_TYPE = 0;
-    private static final int GUN_WEAPON_TYPE = 1;
-    private static final int SHOTGUN_WEAPON_TYPE = 2;
-    private static final int RIFLE_WEAPON_TYPE = 3;
-    private static final int SNIPER_RIFLE_WEAPON_TYPE = 4;
-
-    private static final int PROJECTILE_WEAPON = 0;
-    private static final int ENERGY_WEAPON = 1;
-
-    private int weaponType;
-    private int ammunitionType;
+    private WeaponType weaponType;
+    private AmmunitionType ammunitionType;
     private int ammunition;
 
-    public Weapon(int weaponType) {
+    public Weapon(WeaponType weaponType) {
         this.weaponType = weaponType;
     }
 
-    public Weapon(int weaponType, int ammunitionType) {
+    public Weapon(WeaponType weaponType, AmmunitionType ammunitionType) {
         this.weaponType = weaponType;
         this.ammunitionType = ammunitionType;
     }
 
-    public int getWeaponType() {
+    public WeaponType getWeaponType() {
         return weaponType;
     }
 
-    public void setWeaponType(int type) {
-        this.weaponType = type;
+    public void setWeaponType(WeaponType weaponType) {
+        this.weaponType = weaponType;
     }
 
-    public int getAmmunitionType() {
+    public AmmunitionType getAmmunitionType() {
         return ammunitionType;
     }
 
-    public void setAmmunitionType(int ammunitionType) {
+    public void setAmmunitionType(AmmunitionType ammunitionType) {
         this.ammunitionType = ammunitionType;
     }
 
     public int getDamage() {
 
-        final boolean carriesMeleeWeapon = getWeaponType() == MELEE_WEAPON_TYPE;
-        final boolean carriesGun = getWeaponType() == GUN_WEAPON_TYPE;
-        final boolean carriesShotgun = getWeaponType() == SHOTGUN_WEAPON_TYPE;
-        final boolean carriesRifle = getWeaponType() == RIFLE_WEAPON_TYPE;
-        final boolean carriesSniperRifle = getWeaponType() == SNIPER_RIFLE_WEAPON_TYPE;
+        final boolean carriesMeleeWeapon = getWeaponType() == WeaponType.MELEE;
+        final boolean carriesGun = getWeaponType() == WeaponType.GUN;
+        final boolean carriesShotgun = getWeaponType() == WeaponType.SHOTGUN;
+        final boolean carriesRifle = getWeaponType() == WeaponType.RIFLE;
+        final boolean carriesSniperRifle = getWeaponType() == WeaponType.SNIPER_RIFLE;
 
-        final boolean isProjectileWeapon = getAmmunitionType() == PROJECTILE_WEAPON;
-        final boolean isEnergyWeapon = getAmmunitionType() == ENERGY_WEAPON;
+        final boolean isProjectileWeapon = getAmmunitionType() == AmmunitionType.PROJECTILE;
+        final boolean isEnergyWeapon = getAmmunitionType() == AmmunitionType.ENERGY;
 
         if (carriesMeleeWeapon) {
             return random.nextInt(37) + 8;
@@ -84,12 +75,11 @@ public class Weapon {
 
     public int getMagazineCapacity() {
         return switch (getWeaponType()) {
-            case MELEE_WEAPON_TYPE -> 9999;
-            case GUN_WEAPON_TYPE -> 6;
-            case SHOTGUN_WEAPON_TYPE -> 3;
-            case RIFLE_WEAPON_TYPE -> 9;
-            case SNIPER_RIFLE_WEAPON_TYPE -> 2;
-            default -> 0;
+            case MELEE -> 9999;
+            case GUN -> 6;
+            case SHOTGUN -> 3;
+            case RIFLE -> 9;
+            case SNIPER_RIFLE -> 2;
         };
     }
 
@@ -114,15 +104,18 @@ public class Weapon {
                  2 -> Shotgun\s
                  3 -> Rifle\s
                  4 -> Sniper Rifle""");
-        int weaponType = Integer.parseInt(input.nextLine());
-        if (weaponType != 0) {
+        int weaponTypeChoice = Integer.parseInt(input.nextLine());
+        WeaponType weaponType = WeaponType.values()[weaponTypeChoice];
+
+        if (weaponType != WeaponType.MELEE) {
             System.out.println();
             System.out.println("""
                     What kind of ammunition type should the weapon have?\s
                     Enter one of the following numbers:\s
                      0 -> Projectile \s
                      1 -> Energy""");
-            int ammunitionType = Integer.parseInt(input.nextLine());
+            int ammunitionTypeChoice = Integer.parseInt(input.nextLine());
+            AmmunitionType ammunitionType = AmmunitionType.values()[ammunitionTypeChoice];
             return new Weapon(weaponType, ammunitionType);
         }
         return new Weapon(weaponType);
